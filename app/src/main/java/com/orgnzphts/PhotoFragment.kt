@@ -1,13 +1,17 @@
 package com.orgnzphts
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
+import com.orgnzphts.adapter.ImagePagerAdapter
 import com.orgnzphts.databinding.FragmentPhotoBinding
 import com.orgnzphts.viewmodel.PhotoViewModel
 
@@ -15,19 +19,21 @@ class PhotoFragment : Fragment() {
 
     private var _binding: FragmentPhotoBinding? = null
     private val binding get() = _binding!!
-    private lateinit var photoViewModel : PhotoViewModel
+    private lateinit var model : PhotoViewModel
+    private lateinit var adapter : ImagePagerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        photoViewModel = ViewModelProvider(this).get(PhotoViewModel::class.java)
+        model = ViewModelProvider(this)[PhotoViewModel::class.java]
         _binding = FragmentPhotoBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         initToolBar()
         initView()
+        initObserver()
 
         return root
     }
@@ -56,9 +62,46 @@ class PhotoFragment : Fragment() {
     }
 
     private fun initView() {
-        val imageView : ImageView = binding.ivPhoto
-        photoViewModel.photoPath.observe(viewLifecycleOwner) {
-            imageView.resources
+        // viewPager
+        adapter = ImagePagerAdapter()
+        binding.vpSlide.adapter = adapter
+        binding.vpSlide.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+            }
+        })
+
+        // spinner
+        val adapter = ArrayAdapter(
+            requireContext(),
+            androidx.transition.R.layout.support_simple_spinner_dropdown_item,
+            model.bucketNameList.toList()
+        )
+
+        with(binding.spinner){
+            this.adapter = adapter
+            this.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    view?.let {
+                        //val selectedItem = arg0?.selectedItem.toString()
+                        //photoViewModel.selectBucket(selectedItem)
+                        model.selectBucketByIndex(position)
+                    }
+                }
+
+                override fun onNothingSelected(arg0: AdapterView<*>?) {}
+            }
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun initObserver() {
+        model.slider.observe(viewLifecycleOwner) {
+            adapter.database = it.photoList
+            adapter.notifyDataSetChanged()
         }
     }
 }

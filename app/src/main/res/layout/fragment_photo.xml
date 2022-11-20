@@ -9,12 +9,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/toolbar"
-        app:menu="@menu/menu_toolbar_home"
-        app:title="@string/app_name"/>
+        app:menu="@menu/menu_toolbar_home">
 
-    <ImageView
-        android:id="@+id/iv_photo"
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:dropDownWidth="150dp"
+            android:dropDownHeight="300dp"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp_slide"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="match_parent"/>
 </LinearLayout>
