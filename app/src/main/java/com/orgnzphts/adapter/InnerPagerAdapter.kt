@@ -9,21 +9,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.orgnzphts.R
 import com.orgnzphts.model.Photo
-import com.orgnzphts.model.PhotoType
+import com.orgnzphts.type.PhotoType
 
 class InnerPagerAdapter : RecyclerView.Adapter<InnerPagerAdapter.ViewHolder>() {
-    private val database = ArrayList<Photo>()
+    private val database = ArrayList<Photo?>()
 
     fun setPhoto(photo: Photo){
         database.clear()
-        database.add(Photo("", "", 0L, ""))
+        database.add(null)
         database.add(photo)
-        database.add(Photo("", "", 0L, ""))
+        database.add(null)
         notifyItemChanged(1)
     }
 
     fun setPhotoType(type: PhotoType) {
-        database[1].type = type
+        database[1]?.type = type
         notifyItemChanged(1)
     }
 
@@ -39,9 +39,11 @@ class InnerPagerAdapter : RecyclerView.Adapter<InnerPagerAdapter.ViewHolder>() {
     override fun getItemCount(): Int = database.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @SuppressLint("ClickableViewAccessibility", "CheckResult")
-        fun bind(photo: Photo) {
-            itemView.findViewById<TextView>(R.id.tv_photo).text = photo.toString()
+        @SuppressLint("ClickableViewAccessibility", "CheckResult", "SetTextI18n")
+        fun bind(photo: Photo?) {
+            photo ?: return
+
+            itemView.findViewById<TextView>(R.id.tv_photo).text = "${photo.page}/${photo.pageTot}"
 
             when (photo.type){
                 PhotoType.FAVORITE ->
@@ -58,6 +60,7 @@ class InnerPagerAdapter : RecyclerView.Adapter<InnerPagerAdapter.ViewHolder>() {
                 //.placeholder()
                 .error(R.drawable.ic_baseline_bookmark_24)
                 .into(itemView.findViewById(R.id.iv_photo))
+
         }
     }
 }

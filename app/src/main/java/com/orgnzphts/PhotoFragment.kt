@@ -10,7 +10,7 @@ import com.orgnzphts.adapter.InnerPagerAdapter
 import com.orgnzphts.databinding.FragmentPhotoBinding
 import com.orgnzphts.listener.SliderListener
 import com.orgnzphts.model.Photo
-import com.orgnzphts.model.PhotoType
+import com.orgnzphts.type.PhotoType
 
 class PhotoFragment(
     var photo: Photo,

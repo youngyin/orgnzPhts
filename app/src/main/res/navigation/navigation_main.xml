@@ -22,11 +22,24 @@
         android:id="@+id/navigation_trash"
         android:name="com.orgnzphts.TrashFragment"
         android:label="@string/title_trash"
-        tools:layout="@layout/fragment_trash" />
+        tools:layout="@layout/fragment_trash" >
+        <action
+            android:id="@+id/action_navigation_trash_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_bookmark"
         android:name="com.orgnzphts.BookmarkFragment"
         android:label="@string/title_bookmark"
-        tools:layout="@layout/fragment_bookmark" />
+        tools:layout="@layout/fragment_bookmark" >
+        <action
+            android:id="@+id/action_navigation_bookmark_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.orgnzphts.DetailFragment"
+        tools:layout="@layout/fragment_detail"/>
 </navigation>

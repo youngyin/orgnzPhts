@@ -6,10 +6,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.orgnzphts.R
+import com.orgnzphts.listener.ClickListener
 import com.orgnzphts.model.Photo
 
 class ImageRecyclerAdapter : RecyclerView.Adapter<ImageRecyclerAdapter.ViewHolder>() {
     var database = ArrayList<Photo>()
+    var clickListener : ClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType1: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_recycler_grid, parent, false)
@@ -22,8 +24,12 @@ class ImageRecyclerAdapter : RecyclerView.Adapter<ImageRecyclerAdapter.ViewHolde
 
     override fun getItemCount(): Int = database.size
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(photo: Photo) {
+            itemView.setOnClickListener {
+                clickListener?.click(photo)
+            }
+
             Glide.with(itemView.context)
                 .load(photo.data)
                 //.placeholder()

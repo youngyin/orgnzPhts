@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -14,7 +15,6 @@ import com.orgnzphts.adapter.PagerAdapter
 import com.orgnzphts.databinding.FragmentSliderBinding
 import com.orgnzphts.listener.SliderListener
 import com.orgnzphts.model.Photo
-import com.orgnzphts.model.PhotoType
 import com.orgnzphts.viewmodel.SliderViewModel
 
 class SliderFragment : Fragment() {
@@ -120,11 +120,13 @@ class SliderFragment : Fragment() {
                     }
 
                     override fun favorite(photo: Photo) {
-                        photo.type = PhotoType.FAVORITE
+                        Toast.makeText(requireContext(), "favorite!", Toast.LENGTH_SHORT).show()
+                        model.favorite(photo)
                     }
 
                     override fun delete(photo: Photo) {
-                        photo.type = PhotoType.DELETE
+                        Toast.makeText(requireContext(), "delete!", Toast.LENGTH_SHORT).show()
+                        model.delete(photo)
                     }
             })
             binding.vpSlide.adapter = adapter

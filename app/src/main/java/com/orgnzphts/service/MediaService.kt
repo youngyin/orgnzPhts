@@ -80,7 +80,10 @@ class MediaService(
                     val dateModified = cursor.getLongOrNull(dateModifiedIndex)
                     val idx = cursor.getLongOrNull(idIndex) ?: throw  Exception("id = null")
 
-                    photoList.add(Photo(bucketId, bucketName, idx, data, dateAdded, dateModified))
+                    val photo = Photo(bucketId, bucketName, idx, data, dateAdded, dateModified)
+                    photo.page = (count - cnt).toLong()
+                    photo.pageTot = (count).toLong()
+                    photoList.add(photo)
 
                 } while (--cnt>0 && cursor.moveToNext())
             }

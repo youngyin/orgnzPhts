@@ -1,6 +1,9 @@
 package com.orgnzphts.model
 
-data class Photo(
+import com.orgnzphts.type.PhotoType
+import java.io.Serializable
+
+class Photo (
     val bucketId : String,
     val bucketDisplayName: String,
 
@@ -9,5 +12,8 @@ data class Photo(
     var dateAddedLong: Long? = null,
     val dateModifiedLong: Long? = null,
 
-    var type: PhotoType = PhotoType.NORMAL
-)
+    var type: PhotoType = PhotoType.NORMAL,
+
+    var page : Long = 0,
+    var pageTot: Long = 0
+) : Serializable

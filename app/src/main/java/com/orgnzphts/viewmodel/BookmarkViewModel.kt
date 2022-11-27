@@ -5,5 +5,5 @@ import com.orgnzphts.AppApplication
 
 class BookmarkViewModel : ViewModel() {
     private val mediaService = AppApplication.mediaService!!
-    val photoList = mediaService.getPhotoList(100)
+    val photoList = AppApplication.favoriteList
 }

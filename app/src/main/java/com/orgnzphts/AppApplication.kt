@@ -22,5 +22,14 @@ class AppApplication : Application() {
     companion object {
         var mediaService : MediaService? = null
         var bucketMap : HashMap<String, Bucket> = HashMap()
+
+        val deleteList = ArrayList<Photo>()
+        val favoriteList = ArrayList<Photo>()
+
+        // todo : use room
+        fun initList(){
+            deleteList.clear()
+            favoriteList.clear()
+        }
     }
 }
