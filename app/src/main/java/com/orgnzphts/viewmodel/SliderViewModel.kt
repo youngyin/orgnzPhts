@@ -15,7 +15,7 @@ class SliderViewModel : ViewModel() {
 
     fun selectBucketByIndex(keyIndex : Int) {
         bucket.value = bucketMap.values.toList()[keyIndex]
-        photoList.value = mediaService.getPhotoListByBucket(bucket.value, 100)
+        photoList.value = mediaService.getPhotoListByBucket(bucket.value, 5)
     }
 
     fun getBucketNameList() : ArrayList<String> {

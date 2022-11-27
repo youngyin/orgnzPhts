@@ -1,6 +1,5 @@
 package com.orgnzphts
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
-import com.orgnzphts.adapter.ImagePagerAdapter
+import com.orgnzphts.adapter.PagerAdapter
 import com.orgnzphts.databinding.FragmentSliderBinding
+import com.orgnzphts.listener.SliderListener
+import com.orgnzphts.model.Photo
+import com.orgnzphts.model.PhotoType
 import com.orgnzphts.viewmodel.SliderViewModel
 
 class SliderFragment : Fragment() {
@@ -20,7 +22,7 @@ class SliderFragment : Fragment() {
     private var _binding: FragmentSliderBinding? = null
     private val binding get() = _binding!!
     private lateinit var model : SliderViewModel
-    private lateinit var adapter : ImagePagerAdapter
+    private lateinit var adapter : PagerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,9 +33,9 @@ class SliderFragment : Fragment() {
         _binding = FragmentSliderBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        initObserver()
         initToolBar()
         initView()
-        initObserver()
 
         return root
     }
@@ -63,16 +65,12 @@ class SliderFragment : Fragment() {
 
     private fun initView() {
         // viewPager
-        adapter = ImagePagerAdapter()
-        binding.vpSlide.adapter = adapter
         binding.vpSlide.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
             private var prevPosition = 0
 
             override fun onPageSelected(position: Int) {
-                if (prevPosition < position) { // shift to right
-
-                } else if (prevPosition > position){ // shift to left
-
+                if (prevPosition < position) {
+                } else if (prevPosition > position){
                 }
 
                 prevPosition = position
@@ -98,11 +96,38 @@ class SliderFragment : Fragment() {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun initObserver() {
         model.photoList.observe(viewLifecycleOwner) {
-            adapter.database = it
-            adapter.notifyDataSetChanged()
+
+            adapter = PagerAdapter(requireActivity(), it,
+                object : SliderListener {
+                    override fun showPrev() : Boolean {
+                        if (binding.vpSlide.currentItem != 0) {
+                            binding.vpSlide.currentItem -= 1
+                            return true
+                        }
+
+                        return false
+                    }
+
+                    override fun showNext() : Boolean{
+                        if (binding.vpSlide.currentItem != adapter.itemCount-1) {
+                            binding.vpSlide.currentItem += 1
+                            return true
+                        }
+
+                        return false
+                    }
+
+                    override fun favorite(photo: Photo) {
+                        photo.type = PhotoType.FAVORITE
+                    }
+
+                    override fun delete(photo: Photo) {
+                        photo.type = PhotoType.DELETE
+                    }
+            })
+            binding.vpSlide.adapter = adapter
         }
     }
 }
