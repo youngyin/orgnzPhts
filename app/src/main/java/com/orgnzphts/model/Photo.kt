@@ -1,5 +1,8 @@
 package com.orgnzphts.model
 
+import androidx.room.Entity
+
+@Entity
 data class Photo(
     val bucketId : String,
     val bucketDisplayName: String,
