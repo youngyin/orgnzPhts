@@ -30,7 +30,7 @@ class BookmarkFragment : Fragment() {
 
         val adapter = ImageRecyclerAdapter()
         binding.recycler.adapter = adapter
-        adapter.database = model.photoList as ArrayList<Photo>
+        adapter.database = model.photoList
         adapter.notifyDataSetChanged()
 
         return root

@@ -1,6 +1,7 @@
 package com.orgnzphts
 
 import android.app.Application
+import com.orgnzphts.model.Bucket
 import com.orgnzphts.model.Photo
 import com.orgnzphts.service.MediaService
 import com.orgnzphts.service.PermissionService
@@ -20,6 +21,6 @@ class AppApplication : Application() {
 
     companion object {
         var mediaService : MediaService? = null
-        var bucketMap : HashMap<String, Photo> = HashMap()
+        var bucketMap : HashMap<String, Bucket> = HashMap()
     }
 }

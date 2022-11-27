@@ -5,5 +5,5 @@ import com.orgnzphts.AppApplication
 
 class TrashViewModel : ViewModel() {
     private val mediaService = AppApplication.mediaService!!
-    val photoList = AppApplication.bucketMap.values.toList()
+    val photoList = mediaService.getPhotoList(100)
 }

@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.orgnzphts.PhotoFragment"
+        android:name="com.orgnzphts.SliderFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_photo" >
+        tools:layout="@layout/fragment_slider" >
         <action
             android:id="@+id/action_navigation_home_to_navigation_bookmark"
             app:destination="@id/navigation_bookmark" />

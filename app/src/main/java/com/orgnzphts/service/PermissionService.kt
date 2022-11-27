@@ -26,7 +26,8 @@ class PermissionService(context : Context) {
             .setPermissionListener(permissionListener)
             .setPermissions(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                //Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
             .check()
     }
 }

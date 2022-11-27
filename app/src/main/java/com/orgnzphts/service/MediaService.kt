@@ -5,20 +5,13 @@ import android.database.Cursor
 import android.provider.MediaStore
 import androidx.core.database.getLongOrNull
 import androidx.core.database.getStringOrNull
+import com.orgnzphts.model.Bucket
 import com.orgnzphts.model.Photo
 
 class MediaService(
     private val resolver : ContentResolver
 ) {
     private var queryUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-    private val bucketMap = HashMap<String, Photo>()
-    private val bucketIdList : MutableList<String> get() {
-        val list = mutableListOf<String>()
-        for (bucket in bucketMap.values){
-            list.add(bucket.bucketId)
-        }
-        return list
-    }
 
     private val what = arrayOf(
         MediaStore.Images.ImageColumns.BUCKET_ID,
@@ -29,30 +22,38 @@ class MediaService(
         MediaStore.Images.Media.DATE_MODIFIED,
     )
 
-    fun getBucketMap() : HashMap<String, Photo> {
+    fun getBucketMap() : HashMap<String, Bucket> {
         val orderBy = "${MediaStore.Images.ImageColumns.DATE_ADDED} DESC"
-        var photo : Photo?
+        val bucketMap = HashMap<String, Bucket>()
+        val bucketIdList = ArrayList<String>()
 
         while (true) {
             val questionMark = arrayListOf<String>()
             repeat(bucketMap.count()) { questionMark.add("?") }
             val where = "${MediaStore.Images.ImageColumns.BUCKET_ID} not in (${questionMark.joinToString(", ")})"
-            val photoList = getPhoto(what, where, bucketIdList.toTypedArray(), orderBy, 1)
-            photo = photoList.firstOrNull() ?: break
 
-            bucketMap[photo.bucketDisplayName] = photo
+            val photo = getPhoto(what, where, bucketIdList.toTypedArray(), orderBy, 1).firstOrNull() ?: break
+            val bucket = Bucket(photo.bucketId, photo.bucketDisplayName)
+
+            bucketIdList.add(bucket.bucketId)
+            bucketMap[bucket.bucketId] = bucket
         }
 
         return bucketMap
     }
 
-    fun getPhotoList(bucketId : String) : ArrayList<Photo> {
+    fun getPhotoList(count: Int) : ArrayList<Photo> {
         val orderBy = "${MediaStore.Images.ImageColumns.DATE_ADDED} DESC, ${MediaStore.Images.Media._ID}"
-        val where = "${MediaStore.Images.ImageColumns.BUCKET_ID} = '${bucketId}'"
-        return getPhoto(what, where, null, orderBy, 1000)
+        return getPhoto(what, null, null, orderBy, count)
     }
 
-    private fun getPhoto(what : Array<String>, where : String, whereArgs : Array<String>?, orderBy : String, count : Int) : ArrayList<Photo> {
+    fun getPhotoListByBucket(bucket: Bucket?, count: Int) : ArrayList<Photo> {
+        val orderBy = "${MediaStore.Images.ImageColumns.DATE_ADDED} DESC, ${MediaStore.Images.Media._ID}"
+        val where = "${MediaStore.Images.ImageColumns.BUCKET_ID} = '${bucket?.bucketId}'"
+        return getPhoto(what, where, null, orderBy, count)
+    }
+
+    private fun getPhoto(what : Array<String>, where : String?, whereArgs : Array<String>?, orderBy : String, count : Int) : ArrayList<Photo> {
         var cursor : Cursor? = null
         val photoList = arrayListOf<Photo>()
         var cnt = count

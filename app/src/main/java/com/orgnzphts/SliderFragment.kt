@@ -12,14 +12,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.orgnzphts.adapter.ImagePagerAdapter
-import com.orgnzphts.databinding.FragmentPhotoBinding
-import com.orgnzphts.viewmodel.PhotoViewModel
+import com.orgnzphts.databinding.FragmentSliderBinding
+import com.orgnzphts.viewmodel.SliderViewModel
 
-class PhotoFragment : Fragment() {
+class SliderFragment : Fragment() {
 
-    private var _binding: FragmentPhotoBinding? = null
+    private var _binding: FragmentSliderBinding? = null
     private val binding get() = _binding!!
-    private lateinit var model : PhotoViewModel
+    private lateinit var model : SliderViewModel
     private lateinit var adapter : ImagePagerAdapter
 
     override fun onCreateView(
@@ -27,8 +27,8 @@ class PhotoFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        model = ViewModelProvider(this)[PhotoViewModel::class.java]
-        _binding = FragmentPhotoBinding.inflate(inflater, container, false)
+        model = ViewModelProvider(this)[SliderViewModel::class.java]
+        _binding = FragmentSliderBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         initToolBar()
@@ -65,29 +65,30 @@ class PhotoFragment : Fragment() {
         // viewPager
         adapter = ImagePagerAdapter()
         binding.vpSlide.adapter = adapter
-        binding.vpSlide.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
+        binding.vpSlide.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            private var prevPosition = 0
+
+            override fun onPageSelected(position: Int) {
+                if (prevPosition < position) { // shift to right
+
+                } else if (prevPosition > position){ // shift to left
+
+                }
+
+                prevPosition = position
             }
         })
 
         // spinner
-        val adapter = ArrayAdapter(
-            requireContext(),
-            androidx.transition.R.layout.support_simple_spinner_dropdown_item,
-            model.bucketNameList.toList()
-        )
-
         with(binding.spinner){
-            this.adapter = adapter
+            this.adapter = ArrayAdapter(
+                requireContext(),
+                androidx.transition.R.layout.support_simple_spinner_dropdown_item,
+                model.getBucketNameList()
+            )
             this.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     view?.let {
-                        //val selectedItem = arg0?.selectedItem.toString()
-                        //photoViewModel.selectBucket(selectedItem)
                         model.selectBucketByIndex(position)
                     }
                 }
@@ -99,8 +100,8 @@ class PhotoFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initObserver() {
-        model.slider.observe(viewLifecycleOwner) {
-            adapter.database = it.photoList
+        model.photoList.observe(viewLifecycleOwner) {
+            adapter.database = it
             adapter.notifyDataSetChanged()
         }
     }
